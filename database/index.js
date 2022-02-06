@@ -1,11 +1,11 @@
-const { Sequelize } = require("sequelize")
+const fs = require('fs');
+const path = require('path');
+const {Sequelize} = require('sequelize');
+
+const config_db = require("../config/database")
+
 require("dotenv").config()
-
-const db = new Sequelize(process.env.PG_DATABASE, process.env.PG_USER, process.env.PG_PASSWORD, {
-    host: process.env.PG_HOST,
-    port: process.env.PG_PORT,
-    dialect: "postgres"
-})
-
+const db = new Sequelize(config_db);
+const path_models = path.join(__dirname, '..','models')
 
 module.exports = db

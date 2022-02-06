@@ -1,9 +1,7 @@
 const cookieParser = require("cookie-parser")
 const express = require("express")
+const db = require("./database/index.js")
 const cors = require('cors')
-const cors_options = {
-
-}
 const app = express()
 
 app.use(express.json())
@@ -21,13 +19,28 @@ app.get("/", (req, res) => {
 // ROUTES
 const authRoute = require("./routes/auth")
 const meRoute = require("./routes/me")
-const productsRoute = require("./routes/products")
 
 app.use(authRoute)
 app.use("/me", guardMiddleware, meRoute)
-app.use("/products", guardMiddleware, productsRoute)
 
-const PORT = 8080
-app.listen(8080, () => {
-    console.log("Servidor iniciado na porta " + PORT)
-})
+// CONFIGS
+const PORT = 8080;
+// FUNCTIONS
+
+function logWithDatetime(text){
+    let date = new Date(Date.now())
+    console.log(`${date.toDateString()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} | ${text}`)
+}
+
+(async () => {
+    try{
+        logWithDatetime("INICIANDO SERVIDOR")
+        logWithDatetime("TESTANDO CONEXÃO COM O BANCO DE DADOS")
+        await db.authenticate()
+        app.listen(8080, () => {
+            logWithDatetime("SERVIDOR INICIADO NA PORTA " + PORT)
+        })
+    }catch(error){
+        logWithDatetime("HOUVE UM ERRO! " + error.toString())
+    }
+})()
